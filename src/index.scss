@@ -8,6 +8,9 @@ body {
 	max-height: 100%;
 }
 
+#root {
+}
+
 ul,
 ol {
 	padding-left: 0;
@@ -65,11 +68,38 @@ hr {
 }
 
 // idx
-#idx {
-	font-size: 26px;
+#index {
 	padding: 8px;
-	
-	li {
-		margin: 8px;
+	height: calc(770px);
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	font-size: 26px;
+
+	div {
+		padding: 8px;
+
+		h1,
+		li {
+			margin: 8px;
+		}
+
+		h1 {
+			font-size: 40px;
+		}
+	}
+}
+
+#nav {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+#new {
+	div {
+		input {
+			flex-grow: 1;
+		}
 	}
 }

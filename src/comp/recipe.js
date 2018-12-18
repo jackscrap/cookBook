@@ -1,8 +1,4 @@
-import
-	React,
-	{
-		Component
-	} from "react";
+import React from "react";
 
 import * as firebase from 'firebase';
 
@@ -23,7 +19,7 @@ if (!firebase.apps.length) {
 		dbRef = db.ref();
 }
 
-class Recipe extends Component {
+class Recipe extends React.Component {
 	constructor() {
 		super();
 

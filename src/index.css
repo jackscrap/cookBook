@@ -43,10 +43,27 @@ hr {
   #new > * {
     margin: 8px; }
 
-#idx {
-  font-size: 26px;
-  padding: 8px; }
-  #idx li {
-    margin: 8px; }
+#index {
+  padding: 8px;
+  height: calc(770px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  font-size: 26px; }
+  #index div {
+    padding: 8px; }
+    #index div h1,
+    #index div li {
+      margin: 8px; }
+    #index div h1 {
+      font-size: 40px; }
+
+#nav {
+  display: flex;
+  justify-content: space-evenly; }
+
+#new div input {
+  flex-grow: 1; }
 
 /*# sourceMappingURL=index.css.map */

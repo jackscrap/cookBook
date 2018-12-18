@@ -2,24 +2,35 @@ import React from "react";
 
 import * as firebase from 'firebase';
 
-firebase.initializeApp(
-	{
-		apiKey: "AIzaSyAKkeYEno7MYy9nhn4QjYQEVfxGIkp0FcA",
-		authDomain: "cookbook-1a91d.firebaseapp.com",
-		databaseURL: "https://cookbook-1a91d.firebaseio.com",
-		projectId: "cookbook-1a91d",
-		storageBucket: "cookbook-1a91d.appspot.com",
-		messagingSenderId: "1083763890339"
-	}
-);
+if (!firebase.apps.length) {
+	firebase.initializeApp(
+		{
+			apiKey: "AIzaSyAKkeYEno7MYy9nhn4QjYQEVfxGIkp0FcA",
+			authDomain: "cookbook-1a91d.firebaseapp.com",
+			databaseURL: "https://cookbook-1a91d.firebaseio.com",
+			projectId: "cookbook-1a91d",
+			storageBucket: "cookbook-1a91d.appspot.com",
+			messagingSenderId: "1083763890339"
+		}
+	);
+
+	const
+		db = firebase.database(),
+		dbRef = db.ref();
+}
 
 class Idx extends React.Component {
 	constructor() {
 		super();
 
 		this.state = {
-			recipe: []
+			recipe: [],
+			ln: []
 		};
+
+		this.alphabet = this.alphabet.bind(
+			this
+		);
 	}
 
 	componentDidMount() {
@@ -36,34 +47,108 @@ class Idx extends React.Component {
 						recipe: snap.val()
 					}
 				);
+
+				this.setState(
+					{
+						ln: this.state.recipe.map(
+							(
+								val
+							) => {
+								return val.title;
+							}
+						)
+					}
+				);
 			}
 		);
+	}
+
+	alphabet() {
+		var
+			c = [],
+
+			i = "a".charCodeAt(
+				0
+			);
+
+		const j = "z".charCodeAt(
+			0
+		);
+
+		for (
+			;
+			i <= j;
+			++i
+		) {
+			c.push(
+				String.fromCharCode(
+					i
+				)
+			);
+		}
+
+		return c;
 	}
 
   render() {
     return (
 			<ul
-				id="idx"
+				id="index"
 			>
 				{
-					this.state.recipe.map(
+					this.alphabet().map(
 						(
-							recipe,
-							k
+							c
 						) => {
 							return (
-								<li>
-									<a
-										href={
-											"/" + (k + 1)
-										}
-									>
-										{recipe.title}
-									</a>
-								</li>
+								<div>
+									<h1>{c.toUpperCase()}</h1>
+
+									{
+										this.state.ln.map(
+											(
+												title,
+												k
+											) => {
+												if (title[0].toLowerCase() == c) {
+													return (
+														<li>
+															<a
+																href={k}
+															>
+																{title}
+															</a>
+														</li>
+													);
+												}
+											}
+										)
+									}
+								</div>
 							);
 						}
 					)
+				}
+
+				{
+					// this.state.recipe.map(
+					// 	(
+					// 		recipe,
+					// 		k
+					// 	) => {
+					// 		return (
+					// 			<li>
+					// 				<a
+					// 					href={
+					// 						"/" + (k + 1)
+					// 					}
+					// 				>
+					// 					{recipe.title}
+					// 				</a>
+					// 			</li>
+					// 		);
+					// 	}
+					// )
 				}
 			</ul>
     );

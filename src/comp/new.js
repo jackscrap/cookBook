@@ -1,219 +1,301 @@
 import React from "react";
 
-class Recipe extends React.Component {
-	constructor() {
-		super();
+import fire from "./fire";
 
-		fetch("/api/recipe")
-			.then(
-				response => {
-					return response.json();
-				}
-			)
-			.then(
-				jsondata => {
-				}
-			)
+import "../index.css";
+
+class New extends React.Component {
+	constructor(props) {
+		super(
+			props
+		);
 
 		this.state = {
 			recipe: [],
 
-			title: "",
-			note: "",
-			ingredient: [],
+			stepCnt: 1,
 			step: [],
-			tmp: [],
 
-			search: ""
+			ingredientCnt: 1,
+			ingredient: [],
+			qty: 1
 		};
 
-		this.setTitle = this.setTitle.bind(this);
-		this.setAuthor = this.setAuthor.bind(this);
-		this.setNote = this.setNote.bind(this);
-		this.setIngredient = this.setIngredient.bind(this);
-		this.setStep = this.setStep.bind(this);
-
-		this.submit = this.submit.bind(this);
-
-		this.setSearch = this.setSearch.bind(this);
+		this.addIngredient = this.addIngredient.bind(
+			this
+		);
 	}
 
-	setTitle(e) {
-		this.setState({
-			title: e.target.value
-		});
+	componentWillMount() {
+		let recipeRef = fire.database().ref(
+			"recipe"
+		);
+
+		recipeRef.on(
+			"child_added",
+			snap => {
+				var message = snap.val();
+
+				this.setState(
+					{
+						recipe: [message].concat(
+							this.state.recipe
+						)
+					}
+				);
+			}
+		);
 	}
-	setAuthor(e) {
-		this.setState({
-			author: e.target.value
-		});
+
+	addMessage(
+		e
+	) {
+		e.preventDefault();
+
+		fire.database().ref(
+			"recipe"
+		).push(
+			{
+				title: this.inputTitle.value,
+				author: "jackhasakeyboard@gmail.com",
+				note: this.inputNote.value,
+				ingredient: this.state.ingredient,
+				step: this.state.step
+
+				// title: this.inputTitle.value,
+				// author: "jackhasakeyboard@gmail.com",
+				// note: this.inputNote.value,
+				// ingredient: this.ingredient,
+				// step: this.state.step
+			}
+		);
 	}
-	setNote(e) {
-		this.setState({
-			note: e.target.value
-		});
-	}
-	setIngredient(e) {
-		this.setState({
-			ingredient: e.target.value
-		});
-	}
-	setStep(e) {
-		this.setState({
-			step: e.target.value
-		});
-	}
-	submit(e) {
+
+	addIngredient(
+		e
+	) {
 		e.preventDefault();
 
 		this.setState(
-			prevState => (
-				{
-					tmp: [
-						...prevState.tmp,
-						this.state.title
-					]
-				}
-			)
-		);
-	}
-
-	setSearch(e) {
-		e.preventDefault();
-
-		this.setState({
-			search: e.target.value
-		});
-	}
-	componentDidMount() {
-		fetch(
-			"/api/recipe"
-		)
-			.then(
-				res => res.json()
-			)
-			.then(
-				recipe => {
-					this.setState(
-						{
-							recipe // sets recipe: recipe via ES6 syntax
-						}
-					)
-				}
-			);
-	}
-
-  render() {
-		let filter = this.state.tmp.filter(
-			(
-				item
-			) => {
-				return (
-					<li>{"asdfa"}</li>
-				);
-
-				// if (title == this.state.search) {
-				// 	return <li>hahha</li>;
-				// } else {
-				// 	return <li>hahha</li>;
-				// }
+			{
+				ingredientCnt: this.state.ingredientCnt + 1
 			}
 		);
+	}
+	addStep(
+		e
+	) {
+		e.preventDefault();
 
-    return (
-			<div
+		this.setState(
+			{
+				stepCnt: this.state.stepCnt + 1
+			}
+		);
+	}
+
+	render() {
+		const
+			stepRng = [...Array(this.state.stepCnt).keys()],
+			stepInputMap = stepRng.map(
+				(
+					i
+				) => {
+					return (
+						<div>
+							<div>
+								<label>Title</label>
+								<input
+									type="text"
+									onChange={
+										(
+											e
+										) => {
+											this.state.step[i] = {
+												title: e.target.value,
+												desc: e.target.value
+											}
+										}
+									}
+								/>
+							</div>
+
+							<div>
+								<label>Description:</label>
+								<input
+									type="text"
+									onChange={
+										(
+											e
+										) => {
+											this.state.step[i] = {
+												title: e.target.value,
+												desc: e.target.value
+											}
+										}
+									}
+								/>
+							</div>
+						</div>
+					);
+				}
+			),
+
+			ingredientRng = [...Array(this.state.ingredientCnt).keys()],
+			ingredientMap = ingredientRng.map(
+				(
+					i
+				) => {
+					return (
+						<div>
+							<div>
+								<input
+									type="text" 
+									onChange={
+										(
+											e
+										) => {
+											this.state.ingredient[i] = {
+												name: e.target.value,
+												metric: e.target.value,
+												qty: e.target.value
+											}
+										}
+									}
+								/>
+
+								<select
+									onChange={
+										(
+											e
+										) => {
+											this.state.ingredient[i] = {
+												name: e.target.value,
+												metric: e.target.value,
+												qty: e.target.value
+											}
+										}
+									}
+								>
+									<option>Teaspoon</option>
+									<option>Tablespoon</option>
+									<option>Cup</option>
+								</select>
+							
+								<input
+									type="number"
+									min="1"
+									max="10"
+									onChange={
+										(
+											e
+										) => {
+											this.state.ingredient[i] = {
+												name: e.target.value,
+												metric: e.target.value,
+												qty: e.target.value
+											}
+										}
+									}
+								/>
+							</div>
+						</div>
+					);
+				}
+			)
+
+		return (
+			<form
 				id="new"
+				onSubmit={
+					this.addMessage.bind(
+						this
+					)
+				}
 			>
-				<h3>New</h3>
+				<div
+				>
+					<label>
+						Title
+					</label>
+					<textarea
+						ref={
+							(
+								el
+							) => this.inputTitle = el
+						}
+					/>
+				</div>
 
-				<form>
-					<div>
-						<label>Title: </label>
-						<input
-							type="text"
-							onChange={
-								(e) => this.setTitle(e)
-							}
-						/>
-					</div>
+				<div>
+					<label>
+						Notes
+					</label>
+				
+					<textarea
+						ref={
+							(
+								el
+							) => this.inputNote = el
+						}
+					/>
+				</div>
+				<div>
+					<h3>
+						Ingredients
+					</h3>
 
-					<div>
-						<label>Author: </label>
-						<input
-							type="text"
-							onChange={
-								(e) => this.setAuthor(e)
-							}
-						/>
-					</div>
-
-					<div>
-						<label>Note: </label>
-						<input
-							type="text"
-							onChange={
-								(e) => this.setNote(e)
-							}
-						/>
-					</div>
-
-					<div>
-						<label>Ingredient: </label>
-						<input
-							type="text"
-							onChange={
-								(e) => this.setIngredient(e)
-							}
-						/>
-					</div>
-
-					<div>
-						<label>Step: </label>
-						<input
-							type="text"
-							onChange={
-								(e) => this.setStep(e)
-							}
-						/>
-					</div>
+					{
+						ingredientMap
+					}
 
 					<div>
 						<button
-							value="Submit"
-							onClick={
-								(e) => this.submit(e)
+							onClick= {
+								(
+									e
+								) => this.addIngredient(
+									e
+								)
 							}
 						>
-							Submit
+							Add ingredient
 						</button>
 					</div>
-				</form>
+				</div>
+				<div>
+					<div>
+						<h3>
+							Steps
+						</h3>
+					</div>
 
-				<div
-					id="search"
-				>
-					<h3>Search</h3>
-
-					<form>
-						<input
-							type="text"
-							onChange={
-								(e) => {
-									this.setSearch(e)
-								}
-							}
-						/>
-					</form>
+					<div
+						id="step"
+					>
+						{
+							stepInputMap
+						}
+					</div>
+					<div>
+						<button
+						onClick={
+							this.addStep.bind(
+								this
+							)
+						}
+						>
+							Add step
+						</button>
+					</div>
 				</div>
 
-				<ul>
-					{
-						filter
-					}
-				</ul>
-			</div>
-    );
-  }
+				<input
+					type="submit"
+				/>
+			</form>
+		);
+	}
 }
 
-export default Recipe;
+export default New;
