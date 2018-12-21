@@ -14,9 +14,7 @@ if (!firebase.apps.length) {
 		}
 	);
 
-	const
-		db = firebase.database(),
-		dbRef = db.ref();
+	const db = firebase.database();
 }
 
 class Idx extends React.Component {
@@ -48,17 +46,19 @@ class Idx extends React.Component {
 					}
 				);
 
-				this.setState(
-					{
-						ln: this.state.recipe.map(
-							(
-								val
-							) => {
-								return val.title;
-							}
-						)
-					}
-				);
+				alert(this.state.recipe)
+
+				// this.setState(
+				// 	{
+				// 		ln: this.state.recipe.map(
+				// 			(
+				// 				val
+				// 			) => {
+				// 				return val.title;
+				// 			}
+				// 		)
+				// 	}
+				// );
 			}
 		);
 	}
